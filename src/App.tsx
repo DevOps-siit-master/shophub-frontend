@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AuthForm } from './components/AuthForm';
+import { ShopsPanel } from './components/ShopsPanel';
 import { me, refresh, tokenStore, type AuthUser } from './authApi';
 
 function App() {
@@ -72,37 +73,8 @@ function App() {
         </div>
       </header>
 
-      {/* 1.2 — Upravljanje sajtovima prodavnica (placeholder). */}
-      <section>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: 12,
-          }}
-        >
-          <h2 style={{ margin: 0 }}>Your shops</h2>
-          <button disabled title="Coming soon (spec 1.2)">
-            + New shop
-          </button>
-        </div>
-        <div
-          style={{
-            border: '1px dashed #ccc',
-            borderRadius: 8,
-            padding: 32,
-            textAlign: 'center',
-            color: '#888',
-          }}
-        >
-          <p>You don't have any shops yet.</p>
-          <p style={{ fontSize: 14 }}>
-            Shop-site management (create / configure / delete → Kubernetes Shop CR)
-            will live here — spec 1.2.
-          </p>
-        </div>
-      </section>
+      {/* 1.2 — Upravljanje sajtovima prodavnica. */}
+      <ShopsPanel />
     </div>
   );
 }

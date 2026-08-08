@@ -14,6 +14,13 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/auth-api/, ''),
       },
+      // Shop-site management API (shophub-api). Override the target with
+      // VITE_SHOP_TARGET if the service runs elsewhere.
+      '/shop-api': {
+        target: process.env.VITE_SHOP_TARGET ?? 'http://localhost:3001',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/shop-api/, ''),
+      },
     },
   },
 })
