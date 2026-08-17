@@ -10,8 +10,6 @@ export interface Shop {
   availability: Availability;
   databaseType: DatabaseType;
   walletAddress: string;
-  walletRef: string;
-  discordChannelRef: string;
   ready: boolean;
   replicas: number;
   url: string;
