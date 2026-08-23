@@ -1,0 +1,32 @@
+name: CodeQL
+
+# Runs on the default branch (so the code-scanning results actually cover main)
+# and on PRs (to catch issues before merge). Kept separate from ci.yml because
+# that pipeline's build/scan jobs are pull-request-specific (they tag images
+# pr-<number> and diff the PR range).
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  codeql:
+    name: CodeQL (SAST)
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+      - name: Analyze
+        uses: github/codeql-action/analyze@v3
