@@ -48,25 +48,20 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Build and push image
+      # Build to the local daemon only — PR builds are scanned here and never
+      # published, so they don't pile up as pr-N tags in the public repo.
+      - name: Build image (load locally)
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/shophub-frontend:pr-${{ github.event.number }}
+          push: false
+          load: true
+          tags: shophub-frontend:pr-${{ github.event.number }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-  container-scan:
-    needs: build-test
-    runs-on: ubuntu-latest
-    steps:
       - name: Dockle
         uses: erzz/dockle-action@v1
         with:
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/shophub-frontend:pr-${{ github.event.number }}
+          image: shophub-frontend:pr-${{ github.event.number }}
           failure-threshold: fatal
           accept-keywords: KEY_SHA512
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
