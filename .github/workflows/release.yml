@@ -35,6 +35,12 @@ jobs:
         with:
           context: .
           push: true
+          # Baked into the SPA at build time. Set repo variables SIWE_DOMAIN /
+          # SIWE_URI (Settings → Secrets and variables → Actions → Variables) to
+          # the origin the UI is served from; dev defaults keep builds green.
+          build-args: |
+            VITE_SIWE_DOMAIN=${{ vars.SIWE_DOMAIN || 'localhost:3000' }}
+            VITE_SIWE_URI=${{ vars.SIWE_URI || 'http://localhost:3000' }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/shophub-frontend:${{ steps.tag.outputs.new_version }}
             ${{ secrets.DOCKERHUB_USERNAME }}/shophub-frontend:latest

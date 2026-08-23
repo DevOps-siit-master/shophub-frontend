@@ -53,6 +53,9 @@ jobs:
         with:
           context: .
           push: true
+          build-args: |
+            VITE_SIWE_DOMAIN=${{ vars.SIWE_DOMAIN || 'localhost:3000' }}
+            VITE_SIWE_URI=${{ vars.SIWE_URI || 'http://localhost:3000' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/shophub-frontend:pr-${{ github.event.number }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
