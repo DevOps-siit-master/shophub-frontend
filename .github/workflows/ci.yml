@@ -21,12 +21,16 @@ jobs:
           base: ${{ github.event.pull_request.base.sha }}
           head: ${{ github.event.pull_request.head.sha }}
           extra_args: --only-verified
-      - name: Trivy Config Scan
+      # Vulnerable dependencies (package-lock) + Dockerfile/manifest misconfig.
+      # ignore-unfixed keeps the gate on issues we can actually act on.
+      - name: Dependency & config scan (Trivy)
         uses: aquasecurity/trivy-action@0.35.0
         with:
-          scan-type: config
+          scan-type: fs
+          scanners: vuln,misconfig
           exit-code: '1'
           severity: CRITICAL,HIGH
+          ignore-unfixed: true
 
   build-test:
     needs: lint-and-scan
