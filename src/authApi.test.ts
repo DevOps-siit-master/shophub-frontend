@@ -43,14 +43,19 @@ describe('authApi', () => {
     expect(tokenStore.refresh).toBeNull();
   });
 
-  it('sends login credentials and parses the token pair', async () => {
+  it('sends login credentials without a role and parses the token pair', async () => {
     vi.mocked(fetch).mockResolvedValue(response(tokens));
 
-    await expect(login('Alice@example.com', 'password')).resolves.toEqual(tokens);
+    await expect(login('Alice@example.com', 'password')).resolves.toEqual(
+      tokens,
+    );
 
     expect(fetch).toHaveBeenCalledWith('/auth-api/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ email: 'Alice@example.com', password: 'password' }),
+      body: JSON.stringify({
+        email: 'Alice@example.com',
+        password: 'password',
+      }),
       headers: { 'Content-Type': 'application/json' },
     });
   });

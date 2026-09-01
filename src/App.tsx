@@ -48,6 +48,30 @@ function App() {
     return <AuthForm onAuthenticated={setUser} />;
   }
 
+  if (user.role === 'customer') {
+    return (
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
+        <header
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 24,
+          }}
+        >
+          <h1 style={{ margin: 0 }}>ShopHub</h1>
+          <button onClick={logout}>Log out</button>
+        </header>
+        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: 24 }}>
+          <h2 style={{ marginTop: 0 }}>Customer area</h2>
+          <p style={{ marginBottom: 0 }}>
+            Customers can browse products and place orders here. The shop-owner admin dashboard is not available to customer accounts.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const identity =
     user.email ??
     (user.walletAddress
