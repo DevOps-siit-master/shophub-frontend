@@ -1,5 +1,7 @@
 import { AUTH_BASE } from './config';
 
+export type UserRole = 'shop_owner' | 'customer';
+
 export interface Tokens {
   accessToken: string;
   refreshToken: string;
@@ -9,6 +11,7 @@ export interface AuthUser {
   userId: string;
   email?: string;
   walletAddress?: string;
+  role: UserRole;
 }
 
 const ACCESS_KEY = 'shophub.accessToken';
@@ -48,10 +51,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return body as T;
 }
 
-export function register(email: string, password: string): Promise<Tokens> {
+export function register(email: string, password: string, role: UserRole = 'shop_owner'): Promise<Tokens> {
   return request<Tokens>('/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, role }),
   });
 }
 

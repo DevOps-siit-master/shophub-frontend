@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { login, register, me, tokenStore, type AuthUser } from '../authApi';
+import {
+  login,
+  register,
+  me,
+  tokenStore,
+  type AuthUser,
+  type UserRole,
+} from '../authApi';
 import { siweSignIn } from '../siweLogin';
 
 interface Props {
@@ -10,6 +17,7 @@ type Mode = 'login' | 'register';
 
 export function AuthForm({ onAuthenticated }: Props) {
   const [mode, setMode] = useState<Mode>('login');
+  const [role, setRole] = useState<UserRole>('shop_owner');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -23,7 +31,7 @@ export function AuthForm({ onAuthenticated }: Props) {
       const tokens =
         mode === 'login'
           ? await login(email, password)
-          : await register(email, password);
+          : await register(email, password, role);
       tokenStore.save(tokens);
       onAuthenticated(await me(tokens.accessToken));
     } catch (err) {
@@ -52,8 +60,33 @@ export function AuthForm({ onAuthenticated }: Props) {
       <div className="auth-card">
         <div className="auth-header">
           <h1>ShopHub</h1>
-          <p>{mode === 'login' ? 'Sign in to manage your shops' : 'Create your ShopHub account'}</p>
+          <p>
+            {mode === 'login'
+              ? 'Sign in to your account'
+              : role === 'shop_owner'
+                ? 'Create a shop owner account'
+                : 'Create a customer account'}
+          </p>
         </div>
+
+        {mode === 'register' && (
+          <div className="role-picker" role="tablist" aria-label="Account type">
+            <button
+              type="button"
+              className={role === 'shop_owner' ? 'role-option active' : 'role-option'}
+              onClick={() => setRole('shop_owner')}
+            >
+              Shop owner
+            </button>
+            <button
+              type="button"
+              className={role === 'customer' ? 'role-option active' : 'role-option'}
+              onClick={() => setRole('customer')}
+            >
+              Customer
+            </button>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
@@ -155,8 +188,31 @@ export function AuthForm({ onAuthenticated }: Props) {
           transition: all 0.2s ease;
         }
 
+        .role-picker {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+          margin-bottom: 24px;
+        }
+
+        .role-option {
+          border: 1px solid #d1d5db;
+          background: #f9fafb;
+          color: #374151;
+          border-radius: 8px;
+          padding: 10px 12px;
+          font-weight: 600;
+          cursor: pointer;
+        }
+
+        .role-option.active {
+          background: #eef2ff;
+          border-color: #4f46e5;
+          color: #312e81;
+        }
+
         .auth-header {
-          margin-bottom: 32px;
+          margin-bottom: 24px;
           text-align: center;
         }
 
