@@ -30,6 +30,11 @@ RUN npm run build
 
 # --- runtime stage ---
 FROM nginxinc/nginx-unprivileged:alpine AS runtime
+# Patch base-image OS packages so we don't ship CVEs that already have fixes
+# upstream (e.g. expat HIGH advisories). Runs as root, then drops back to the
+# unprivileged nginx user the base image ships with.
+USER root
+RUN apk upgrade --no-cache
 COPY --from=build /app/dist /usr/share/nginx/html
 USER nginx
 EXPOSE 8080
